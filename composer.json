@@ -1,7 +1,7 @@
 {
-    "name": "miyahan/telnet",
+    "name": "meklis/telnet",
     "description": "Telnet client in php",
-    "keywords": ["telnet", "router", "cisco", "juniper"],
+    "keywords": ["telnet", "router", "cisco", "juniper", "dlink", "xos", "bdcom", "xtreme"],
     "license": "MIT",
     "type": "library",
     "authors": [
@@ -31,6 +31,10 @@
         {
             "name": "Kouhei Miyasaka",
             "email": "k.miyasaka@jpn21.net"
+        },
+        {
+            "name": "Max Boyar",
+            "email": "max.boyar.a@gmail.com"
         }
     ],
     "require": {
@@ -38,7 +42,7 @@
     },
     "autoload": {
         "psr-4": {
-            "miyahan\\network\\": "src"
+            "meklis\\network\\": "src"
         }
     },
     "minimum-stability": "dev"
