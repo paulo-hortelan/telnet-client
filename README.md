@@ -1,17 +1,17 @@
 Telnet
 ======
 
-Telnet client written in php
+Forked from https://github.com/miyahan/Telnet.    
+Telnet client written in php   
 
 ## Description
 
 - Telnet to Linux/UNIX servers
-- Telnet to network routeres (Cisco IOS , Juniper JUNOS)
-
+- Telnet to network routeres (Cisco IOS , Juniper JUNOS, Xtreme XOS, Dlink, BDcom)    
 
 ## Requirement
 
-- PHP 5.6 or later (PHP 7.0 ready!)
+- PHP 5.6 or later (PHP 7.0 ready!)   
 
 
 ## Usage
@@ -37,7 +37,7 @@ try {
 
 ## Installation
 
-Use composer (https://packagist.org/packages/miyahan/telnet)
+Use composer (https://packagist.org/packages/meklis/telnet)
 
 
 ## Author
