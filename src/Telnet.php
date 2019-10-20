@@ -1,6 +1,6 @@
 <?php
 
-namespace miyahan\network;
+namespace meklis\network;
 
 /**
  * Telnet class
