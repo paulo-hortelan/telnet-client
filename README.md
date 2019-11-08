@@ -20,7 +20,7 @@ Telnet client written in php
 
 ```php
 try {
-    $telnet = new \miyahan\network\Telnet('10.0.0.1');
+    $telnet = new \meklis\network\Telnet('10.0.0.1');
     $telnet->connect();
     $telnet->login('foo', 'bar', 'cisco');
     $telnet->exec('terminal length 0');
@@ -38,16 +38,6 @@ try {
 ## Installation
 
 Use composer (https://packagist.org/packages/meklis/telnet)
-
-
-## Author
-
-- Bestnetwork <reparto.sviluppo@bestnetwork.it">
-- Dalibor Andzakovic <dali@swerve.co.nz>
-- Matthias Blaser <mb@adfinis.ch>
-- Christian Hammers <chammers@netcologne.de>
-- Frederik Sauer <fsa@dwarf.dk>
-- Kouhei Miyasaka <k.miyasaka@jpn21.net>
 
 
 ## License
