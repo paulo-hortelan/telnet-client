@@ -12,29 +12,32 @@ namespace meklis\network;
  */
 class Telnet
 {
-    protected $host;
-    protected $port;
-    protected $timeout;
-    protected $stream_timeout_sec;
-    protected $stream_timeout_usec;
+    private $host;
+    private $port;
+    private $timeout;
+    private $stream_timeout_sec;
+    private $stream_timeout_usec;
 
-    protected $socket = null;
-    protected $buffer = null;
-    protected $prompt;
-    protected $errno;
-    protected $errstr;
-    protected $strip_prompt = true;
-    protected $eol = "\r\n";
-    protected $enableMagicControl = true;
-    protected $NULL;
-    protected $DC1;
-    protected $WILL;
-    protected $WONT;
-    protected $DO;
-    protected $DONT;
-    protected $IAC;
+    private $socket = null;
+    private $buffer = null;
+    private $prompt;
+    private $errno;
+    private $errstr;
+    private $strip_prompt = true;
+    private $eol = "\r\n";
+    private $enableMagicControl = true;
+    private $NULL;
+    private $DC1;
+    private $WILL;
+    private $WONT;
+    private $DO;
+    private $DONT;
+    private $IAC;
+    private $SB;
+    private $NAWS;
+    private $SE;
 
-    protected $global_buffer;
+    private $global_buffer;
 
     const TELNET_ERROR = false;
     const TELNET_OK = true;
@@ -60,6 +63,9 @@ class Telnet
         $this->NULL = chr(0);
         $this->DC1 = chr(17);
         $this->WILL = chr(251);
+        $this->SB = chr(250);
+        $this->SE = chr(240);
+        $this->NAWS = chr(31);
         $this->WONT = chr(252);
         $this->DO = chr(253);
         $this->DONT = chr(254);
@@ -126,6 +132,31 @@ class Telnet
             $this->socket = null;
         }
         return $this;
+    }
+
+    /**
+     * Change window size in terminal
+     * Use its method when device respond with new line 
+     *
+     * @param int $wide
+     * @param int $high
+     * @return bool
+     * @throws \Exception
+     */
+    public function setWindowSize($wide = 80, $high = 40) {
+        fwrite($this->socket, $this->IAC . $this->WILL . $this->NAWS);
+        $c = $this->getc();
+        if($c != $this->IAC) {
+            throw new \Exception('Error: unknown control character ' . ord($c));
+        }
+        $c = $this->getc();
+        if($c == $this->DONT || $c == $this->WONT) {
+            throw new \Exception("Error: server refuses to use NAWS");
+        } elseif ($c != $this->DO && $c != $this->WILL) {
+            throw  new \Exception('Error: unknown control character ' . ord($c));
+        }
+        fwrite($this->socket, $this->IAC . $this->SB . $this->NAWS . 0 . $wide . 0 . $high . $this->IAC . $this->SE);
+        return self::TELNET_OK;
     }
 
     /**
@@ -426,7 +457,6 @@ class Telnet
         if (!$this->socket) {
             throw new \Exception("Telnet connection closed");
         }
-
 
         // clear buffer from last command
         $this->clearBuffer();
