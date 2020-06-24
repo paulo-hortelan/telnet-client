@@ -12,32 +12,32 @@ namespace meklis\network;
  */
 class Telnet
 {
-    private $host;
-    private $port;
-    private $timeout;
-    private $stream_timeout_sec;
-    private $stream_timeout_usec;
+    protected $host;
+    protected $port;
+    protected $timeout;
+    protected $stream_timeout_sec;
+    protected $stream_timeout_usec;
 
-    private $socket = null;
-    private $buffer = null;
-    private $prompt;
-    private $errno;
-    private $errstr;
-    private $strip_prompt = true;
-    private $eol = "\r\n";
-    private $enableMagicControl = true;
-    private $NULL;
-    private $DC1;
-    private $WILL;
-    private $WONT;
-    private $DO;
-    private $DONT;
-    private $IAC;
-    private $SB;
-    private $NAWS;
-    private $SE;
+    protected $socket = null;
+    protected $buffer = null;
+    protected $prompt;
+    protected $errno;
+    protected $errstr;
+    protected $strip_prompt = true;
+    protected $eol = "\r\n";
+    protected $enableMagicControl = true;
+    protected $NULL;
+    protected $DC1;
+    protected $WILL;
+    protected $WONT;
+    protected $DO;
+    protected $DONT;
+    protected $IAC;
+    protected $SB;
+    protected $NAWS;
+    protected $SE;
 
-    private $global_buffer;
+    protected $global_buffer;
 
     const TELNET_ERROR = false;
     const TELNET_OK = true;
