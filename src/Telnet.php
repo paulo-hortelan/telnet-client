@@ -504,7 +504,7 @@ class Telnet
         while (!$this->global_buffer->eof()) {
             $output .= $this->global_buffer->fgets();
         }
-        return  $output;
+        return  mb_convert_encoding($output, 'UTF-8', 'UTF-8');
     }
     /**
      * Telnet control character magic
