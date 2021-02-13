@@ -500,9 +500,12 @@ class Telnet
     public function getGlobalBuffer()
     {
         $this->global_buffer->rewind();
-        return $this->global_buffer->fpassthru();
+        $output = '';
+        while (!$this->global_buffer->eof()) {
+            $output .= $this->global_buffer->fgets();
+        }
+        return  $output;
     }
-
     /**
      * Telnet control character magic
      *
