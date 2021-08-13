@@ -452,7 +452,7 @@ class Telnet
      * @return bool
      * @throws \Exception
      */
-    protected function write($buffer, $add_newline = true)
+    public function write($buffer, $add_newline = true)
     {
         if (!$this->socket) {
             throw new \Exception("Telnet connection closed");
