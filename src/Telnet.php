@@ -167,10 +167,10 @@ class Telnet
      * @param boolean $add_newline Default true, adds newline to the command
      * @return string Command result
      */
-    public function exec($command, $add_newline = true)
+    public function exec($command, $add_newline = true, $prompt = null)
     {
         $this->write($command, $add_newline);
-        $this->waitPrompt();
+        $this->waitPrompt($prompt);
         return $this->getBuffer();
     }
 
@@ -538,8 +538,11 @@ class Telnet
     /**
      * Reads socket until prompt is encountered
      */
-    protected function waitPrompt()
+    public function waitPrompt($prompt = null)
     {
-        return $this->readTo($this->prompt);
+        if($prompt === null) {
+            $prompt = $this->prompt;
+        }
+        return $this->readTo($prompt);
     }
 }
