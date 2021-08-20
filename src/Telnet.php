@@ -73,8 +73,6 @@ class Telnet
 
         // open global buffer stream
         $this->global_buffer = new \SplFileObject('php://temp', 'r+b');
-
-        $this->connect();
     }
 
     /**
@@ -136,7 +134,7 @@ class Telnet
 
     /**
      * Change window size in terminal
-     * Use its method when device respond with new line 
+     * Use its method when device respond with new line
      *
      * @param int $wide
      * @param int $high
@@ -454,10 +452,9 @@ class Telnet
      */
     public function write($buffer, $add_newline = true)
     {
-        if (!$this->socket) {
-            throw new \Exception("Telnet connection closed");
+        if($this->socket === null) {
+            throw new \Exception("Telnet connection closed! Check you call method connect() before any calling");
         }
-
         // clear buffer from last command
         $this->clearBuffer();
 
