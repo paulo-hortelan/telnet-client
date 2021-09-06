@@ -294,6 +294,12 @@ class Telnet
                 $pass_prompt = 'password:';
                 $prompt_reg = '[ > ]';
                 break;
+                
+            case 'cdata': // Cdata
+                $user_prompt = 'ame:';
+                $pass_prompt = 'ord:';
+                $prompt_reg = '[>|#]';
+                break;
         }
 
         try {
