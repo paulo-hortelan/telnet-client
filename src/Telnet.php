@@ -406,23 +406,14 @@ class Telnet
      * @return bool
      * @throws \Exception
      */
-    protected function readTo($prompt, $more=false)
+    protected function readTo($prompt)
     {
         if (!$this->socket) {
             throw new \Exception("Telnet connection closed");
         }
 
-        $more_types = array(
-            "--- more ---",
-            "--More--",
-            "  --Press any key to continue Ctrl+c to stop-- ",
-            "--More ( Press 'Q' to quit )--",
-        );
-        $more_pattern = implode('|', $more_types);        
-
-        // clear buffer from last command if has no more to show
-        if (!$more)
-            $this->clearBuffer();
+        // clear the buffer
+        $this->clearBuffer();
 
         $until_t = time() + $this->timeout;
         do {
@@ -451,11 +442,6 @@ class Telnet
             // append current char to global buffer
             $this->buffer .= $c;
 
-            // the more pattern has been found, type a white space
-            if (preg_match('/' . $more_pattern . '/', $this->buffer)) {
-                $this->write(" ", true, true);
-            }            
-
             // we've encountered the prompt. Break out of the loop
             if (!empty($prompt) && preg_match("/{$prompt}$/", $this->buffer)) {
                 return self::TELNET_OK;
@@ -472,15 +458,13 @@ class Telnet
      * @return bool
      * @throws \Exception
      */
-    public function write($buffer, $add_newline = true, $more=false)
+    public function write($buffer, $add_newline = true)
     {
         if($this->socket === null) {
             throw new \Exception("Telnet connection closed! Check you call method connect() before any calling");
         }
-
-        // clear buffer from last command if has no more to show
-        if (!$more)
-            $this->clearBuffer();
+        // clear buffer from last command
+        $this->clearBuffer();
 
         if ($add_newline == true) {
             $buffer .= $this->eol;
