@@ -428,6 +428,7 @@ class Telnet
         do {
             // time's up (loop can be exited at end or through continue!)
             if (time() > $until_t) {
+                $this->clearBuffer();
                 throw new \Exception("Couldn't find the requested : '$prompt' within {$this->timeout} seconds");
             }
 
@@ -436,6 +437,7 @@ class Telnet
                 if (empty($prompt)) {
                     return self::TELNET_OK;
                 }
+                $this->clearBuffer();
                 throw new \Exception("Couldn't find the requested : '" . $prompt . "', it was not in the data returned from server: " . $this->buffer);
             }
 
