@@ -73,6 +73,8 @@ class Telnet
 
         // open global buffer stream
         $this->global_buffer = new \SplFileObject('php://temp', 'r+b');
+
+        $this->connect();
     }
 
     /**
@@ -134,7 +136,7 @@ class Telnet
 
     /**
      * Change window size in terminal
-     * Use its method when device respond with new line
+     * Use its method when device respond with new line 
      *
      * @param int $wide
      * @param int $high
@@ -165,10 +167,10 @@ class Telnet
      * @param boolean $add_newline Default true, adds newline to the command
      * @return string Command result
      */
-    public function exec($command, $add_newline = true, $prompt = null)
+    public function exec($command, $add_newline = true)
     {
         $this->write($command, $add_newline);
-        $this->waitPrompt($prompt);
+        $this->waitPrompt();
         return $this->getBuffer();
     }
 
@@ -294,12 +296,6 @@ class Telnet
                 $pass_prompt = 'password:';
                 $prompt_reg = '[ > ]';
                 break;
-                
-            case 'cdata': // Cdata
-                $user_prompt = 'ame:';
-                $pass_prompt = 'ord:';
-                $prompt_reg = 'OLT(.*?)[>#]';
-                break;
         }
 
         try {
@@ -324,6 +320,57 @@ class Telnet
 
         return $this;
     }
+
+    /**
+     * Attempts login to remote host.
+     * This method is a wrapper for lower level private methods and should be
+     * modified to reflect telnet implementation details like login/password
+     * and line prompts. Defaults to standard unix non-root prompts
+     *
+     * @param string $username Username
+     * @param string $password Password
+     * @param string $host_type Type of destination host
+     * @return $this
+     * @throws \Exception
+     */
+    public function loginTL1($username, $password, $host_type = 'nokia')
+    {
+        switch ($host_type) {
+            case 'nokia':    
+                $user_prompt = 'Enter Username   :';
+                $pass_prompt = 'Enter Password   :';
+                $prompt_reg = '[<]';
+                $this->setPrompt('<');
+                $this->waitPrompt();
+                $this->write("\n");
+                $this->setPrompt('Would you like a TL1 login(T) or TL1 normal session(N) ? [N]: ');
+                $this->waitPrompt();
+                $this->write('T');                
+                break;
+        }
+
+        try {            
+            // username
+            if (!empty($username)) {
+                $this->setPrompt($user_prompt);
+                $this->waitPrompt();
+                $this->write($username);
+            }
+
+            // password
+            $this->setPrompt($pass_prompt);
+            $this->waitPrompt();
+            $this->write($password);
+
+            // wait prompt
+            $this->setRegexPrompt($prompt_reg);
+            $this->waitPrompt();
+        } catch (\Exception $e) {
+            throw new \Exception("Login failed.");
+        }
+
+        return $this;
+    }    
 
     /**
      * Sets the string of characters to respond to.
@@ -419,7 +466,6 @@ class Telnet
         do {
             // time's up (loop can be exited at end or through continue!)
             if (time() > $until_t) {
-                $this->clearBuffer();
                 throw new \Exception("Couldn't find the requested : '$prompt' within {$this->timeout} seconds");
             }
 
@@ -428,7 +474,6 @@ class Telnet
                 if (empty($prompt)) {
                     return self::TELNET_OK;
                 }
-                $this->clearBuffer();
                 throw new \Exception("Couldn't find the requested : '" . $prompt . "', it was not in the data returned from server: " . $this->buffer);
             }
 
@@ -458,11 +503,12 @@ class Telnet
      * @return bool
      * @throws \Exception
      */
-    public function write($buffer, $add_newline = true)
+    protected function write($buffer, $add_newline = true)
     {
-        if($this->socket === null) {
-            throw new \Exception("Telnet connection closed! Check you call method connect() before any calling");
+        if (!$this->socket) {
+            throw new \Exception("Telnet connection closed");
         }
+
         // clear buffer from last command
         $this->clearBuffer();
 
@@ -505,12 +551,9 @@ class Telnet
     public function getGlobalBuffer()
     {
         $this->global_buffer->rewind();
-        $output = '';
-        while (!$this->global_buffer->eof()) {
-            $output .= $this->global_buffer->fgets();
-        }
-        return  mb_convert_encoding($output, 'UTF-8', 'UTF-8');
+        return $this->global_buffer->fpassthru();
     }
+
     /**
      * Telnet control character magic
      *
@@ -543,11 +586,8 @@ class Telnet
     /**
      * Reads socket until prompt is encountered
      */
-    public function waitPrompt($prompt = null)
+    protected function waitPrompt()
     {
-        if($prompt === null) {
-            $prompt = $this->prompt;
-        }
-        return $this->readTo($prompt);
+        return $this->readTo($this->prompt);
     }
 }
