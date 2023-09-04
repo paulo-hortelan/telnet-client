@@ -296,6 +296,12 @@ class Telnet
                 $pass_prompt = 'password:';
                 $prompt_reg = '[ > ]';
                 break;
+
+            case 'nokia':
+                $user_prompt = 'login: ';
+                $pass_prompt = 'password: ';
+                $prompt_reg = '[#]';
+                break;
         }
 
         try {
@@ -322,7 +328,7 @@ class Telnet
     }
 
     /**
-     * Attempts login to remote host.
+     * Attempts login to a TL1 remote host.
      * This method is a wrapper for lower level private methods and should be
      * modified to reflect telnet implementation details like login/password
      * and line prompts. Defaults to standard unix non-root prompts
@@ -339,7 +345,7 @@ class Telnet
             case 'nokia':    
                 $user_prompt = 'Enter Username   :';
                 $pass_prompt = 'Enter Password   :';
-                $prompt_reg = '[<]';
+                $prompt_reg = "(;\\r\\n\\r\\n<)";
                 $this->setPrompt('<');
                 $this->waitPrompt();
                 $this->write("\n");

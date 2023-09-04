@@ -4,6 +4,10 @@ Telnet
 Forked from https://github.com/miyahan/Telnet.    
 Telnet client written in php   
 
+## Upgrades from the original
+
+- Gets full response even when the terminal don't show all the data, only prompts the `--More--` 
+
 ## Description
 
 - Telnet to Linux/UNIX servers
