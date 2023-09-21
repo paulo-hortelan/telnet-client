@@ -302,6 +302,10 @@ class Telnet
                 $pass_prompt = 'password: ';
                 $prompt_reg = '[#]';
                 break;
+            case 'digistar':
+                $pass_prompt = 'Password: ';
+                $prompt_reg = '[>]';
+                break;
         }
 
         try {
