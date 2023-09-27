@@ -143,17 +143,18 @@ class Telnet
      * @return bool
      * @throws \Exception
      */
-    public function setWindowSize($wide = 80, $high = 40) {
+    public function setWindowSize($wide = 80, $high = 40)
+    {
         fwrite($this->socket, $this->IAC . $this->WILL . $this->NAWS);
         $c = $this->getc();
-        if($c != $this->IAC) {
+        if ($c != $this->IAC) {
             throw new \Exception('Error: unknown control character ' . ord($c));
         }
         $c = $this->getc();
-        if($c == $this->DONT || $c == $this->WONT) {
+        if ($c == $this->DONT || $c == $this->WONT) {
             throw new \Exception("Error: server refuses to use NAWS");
         } elseif ($c != $this->DO && $c != $this->WILL) {
-            throw  new \Exception('Error: unknown control character ' . ord($c));
+            throw new \Exception('Error: unknown control character ' . ord($c));
         }
         fwrite($this->socket, $this->IAC . $this->SB . $this->NAWS . 0 . $wide . 0 . $high . $this->IAC . $this->SE);
         return self::TELNET_OK;
@@ -255,19 +256,19 @@ class Telnet
     public function login($username, $password, $host_type = 'linux')
     {
         switch ($host_type) {
-            case 'linux':  // General Linux/UNIX
+            case 'linux': // General Linux/UNIX
                 $user_prompt = 'login:';
                 $pass_prompt = 'Password:';
                 $prompt_reg = '\$';
                 break;
 
-            case 'ios':    // Cisco IOS, IOS-XE, IOS-XR
+            case 'ios': // Cisco IOS, IOS-XE, IOS-XR
                 $user_prompt = 'Username:';
                 $pass_prompt = 'Password:';
                 $prompt_reg = '[>#]';
                 break;
 
-            case 'junos':  // Juniper Junos OS
+            case 'junos': // Juniper Junos OS
                 $user_prompt = 'login:';
                 $pass_prompt = 'Password:';
                 $prompt_reg = '[%>#]';
@@ -346,7 +347,7 @@ class Telnet
     public function loginTL1($username, $password, $host_type = 'nokia')
     {
         switch ($host_type) {
-            case 'nokia':    
+            case 'nokia':
                 $user_prompt = 'Enter Username   :';
                 $pass_prompt = 'Enter Password   :';
                 $prompt_reg = "(;\\r\\n\\r\\n<)";
@@ -355,22 +356,29 @@ class Telnet
                 $this->write("\n");
                 $this->setPrompt('Would you like a TL1 login(T) or TL1 normal session(N) ? [N]: ');
                 $this->waitPrompt();
-                $this->write('T');                
+                $this->write('T');
+                break;
+            case 'fiberhome':
+                $this->setPrompt(';');
+                $this->write("LOGIN:::CTAG::UN=$username,PWD=$password;");
+                $prompt_reg = ";";
                 break;
         }
 
-        try {            
-            // username
-            if (!empty($username)) {
-                $this->setPrompt($user_prompt);
-                $this->waitPrompt();
-                $this->write($username);
-            }
+        try {
+            if (!empty($user_prompt)) {
+                // username
+                if (!empty($username)) {
+                    $this->setPrompt($user_prompt);
+                    $this->waitPrompt();
+                    $this->write($username);
+                }
 
-            // password
-            $this->setPrompt($pass_prompt);
-            $this->waitPrompt();
-            $this->write($password);
+                // password
+                $this->setPrompt($pass_prompt);
+                $this->waitPrompt();
+                $this->write($password);
+            }
 
             // wait prompt
             $this->setRegexPrompt($prompt_reg);
@@ -380,7 +388,7 @@ class Telnet
         }
 
         return $this;
-    }    
+    }
 
     /**
      * Sets the string of characters to respond to.
@@ -416,8 +424,8 @@ class Telnet
      */
     public function setStreamTimeout($timeout)
     {
-        $this->stream_timeout_usec = (int)(fmod($timeout, 1) * 1000000);
-        $this->stream_timeout_sec = (int)$timeout;
+        $this->stream_timeout_usec = (int) (fmod($timeout, 1) * 1000000);
+        $this->stream_timeout_sec = (int) $timeout;
     }
 
     /**
@@ -573,7 +581,8 @@ class Telnet
      */
     protected function negotiateTelnetOptions()
     {
-        if (!$this->enableMagicControl) return self::TELNET_OK;
+        if (!$this->enableMagicControl)
+            return self::TELNET_OK;
 
         $c = $this->getc();
         if ($c != $this->IAC) {
