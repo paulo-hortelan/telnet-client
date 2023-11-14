@@ -317,10 +317,17 @@ class Telnet
                 $pass_prompt = 'password: ';
                 $prompt_reg = '[#]';
                 break;
+
             case 'digistar':
                 $pass_prompt = 'Password: ';
                 $prompt_reg = '[>]';
                 break;
+
+            case 'phyhome':
+                $user_prompt = 'Username(1-32 chars):';
+                $pass_prompt = 'Password(1-16 chars):';
+                $prompt_reg = '[>]';
+                break;                
         }
 
         try {
