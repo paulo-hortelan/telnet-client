@@ -6,12 +6,14 @@ Telnet client written in php
 
 ## Upgrades from the original
 
-- Gets full response even when the terminal don't show all the data, only prompts the `--More--` 
+- Gets full response even when the terminal don't show all the data, only prompts the `--More--`
+- Added login to TL1 protocol 
 
 ## Description
 
 - Telnet to Linux/UNIX servers
-- Telnet to network routeres (Cisco IOS , Juniper JUNOS, Xtreme XOS, Dlink, BDcom)    
+- Telnet to network routeres (Cisco IOS , Juniper JUNOS, Xtreme XOS, Dlink, BDcom)
+- Telnet to olt (Nokia, Digistar, Phyhome)    
 
 ## Requirement
 
